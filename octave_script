@@ -1,0 +1,74 @@
+% data analysis and visualisation, master's thesis
+% visualise a dataset consisting in 2 corpora, each 1000 verbs in russian and czech in infinitive form
+% dataset in wd named "verbFreq_corpora.xlsx", worksheet "freq"
+% author: giulia cauli
+% project number: 20210803
+
+% ****************************************************************************
+
+clear
+clc
+close all
+
+%% DATA PLOTTING
+
+% install and load i/o package
+pkg install io-2.6.3.tar.gz
+pkg load io;
+
+% load dataset
+% 1st col contains russian data (ipm), 2nd col contains czech data (ipm)
+% no header row
+dataset = xlsread('verbFreq_corpora.xlsx', 'freq');
+ru = dataset(:, 1); % russian data: all elements in col 1
+cz = dataset(:, 2); % czech data: all elements in col 2
+
+% set x as range 1:1000
+x = 1:1:1000;
+
+% plot the corpora together
+figure(1); clf;
+plot(x, ru, 'b--');
+xlabel('position');
+ylabel('frequency (ipm)');
+title('frequency distribution russian and czech corpora')
+hold on
+plot(x, cz, 'g--')
+
+% legend
+legend('ipm russian verbs', 'ipm czech verbs')
+
+% plot the corpora separately
+figure(2); clf;
+subplot(1,2,1)
+plot(x, ru, 'b--');
+xlabel('position');
+ylabel('frequency (ipm)');
+title('frequency distribution russian corpus')
+
+subplot(1,2,2)
+plot(x, cz, 'b--')
+xlabel('position');
+ylabel('frequency (ipm)');
+title('frequency distribution czech corpus')
+
+% ****************************************************************************
+
+%% STATISTICAL ANALYSIS
+
+pkg install statistics-1.4.2.tar.gz
+pkg load statistics;
+
+% perform one-way anova
+variance = anova(dataset) % no othe arguments, each column in dataset is a group
+if variance <= 0.005
+  sprintf('the variance between corpora is %.3f and is significant \n', variance)
+else
+  sprintf('the the variance between corpora is %.3f and is not significant \n', variance)
+end
+
+% IN PROGRESS
+
+%% LOGARHYTMIC CURVE FITTING
+
+%% ANOVA ON SUBCORPORA DIVIDED BY FREQUENCY
